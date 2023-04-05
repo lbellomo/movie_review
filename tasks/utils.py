@@ -22,7 +22,9 @@ def get_page(api_key: str, page: int = 1) -> list[tuple[str, float]]:
     return [(item["release_date"], item["vote_average"]) for item in results]
 
 
-def get_pages(api_key, start, end, max_workers):
+def get_pages(
+    api_key: str, start: int, end: int, max_workers: int
+) -> list[tuple[str, float]]:
     if start < 1 or end > 1000:
         raise ValueError("'start' and 'end' must be between 1 and 1000")
 
@@ -37,7 +39,7 @@ def get_pages(api_key, start, end, max_workers):
     return flat_result
 
 
-def prepare_df(result):
+def prepare_df(result: list[tuple[str, float]]) -> pd.DataFrame:
     df = (
         pd.DataFrame(result, columns=["release_date", "vote_average"])
         .assign(year=lambda x: x.release_date.str.split("-", n=1).str.get(0))
@@ -47,7 +49,7 @@ def prepare_df(result):
     return df
 
 
-def post_movies(df, api_post_url):
+def post_movies(df: pd.DataFrame, api_post_url: str) -> None:
     payload = df.to_json(orient="records")
     headers = {"content-type": "application/json"}
     r = requests.post(api_post_url, data=payload, headers=headers)
@@ -56,7 +58,9 @@ def post_movies(df, api_post_url):
     return
 
 
-def scrape_movies(api_key, api_post_url, max_workers=4, max_page=100):
+def scrape_movies(
+    api_key: str, api_post_url: str, max_workers: int = 4, max_page: int = 100
+) -> str:
     items = get_pages(api_key, 1, max_page, max_workers)
     df = prepare_df(items)
     post_movies(df, api_post_url)
