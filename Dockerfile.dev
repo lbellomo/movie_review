@@ -8,11 +8,3 @@ RUN pip install --no-cache-dir -r /tmp/requirements.txt
 COPY ./app /app
 
 ENV PYTHONPATH=/app
-
-# EXPOSE 80
-
-# ENTRYPOINT ["/entrypoint."]
-
-# Run the start script, it will check for an /app/prestart.sh script (e.g. for migrations)
-# And then will start Gunicorn with Meinheld
-# CMD ["/start.sh"]
