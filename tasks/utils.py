@@ -25,6 +25,7 @@ def get_page(api_key: str, page: int = 1) -> list[tuple[str, float]]:
 def get_pages(
     api_key: str, start: int, end: int, max_workers: int
 ) -> list[tuple[str, float]]:
+    """Download in parallel a range of pages"""
     if start < 1 or end > 1000:
         raise ValueError("'start' and 'end' must be between 1 and 1000")
 
@@ -40,6 +41,7 @@ def get_pages(
 
 
 def prepare_df(result: list[tuple[str, float]]) -> pd.DataFrame:
+    """Analyzes the films by year, taking vote_average and quantity"""
     df = (
         pd.DataFrame(result, columns=["release_date", "vote_average"])
         .assign(year=lambda x: x.release_date.str.split("-", n=1).str.get(0))
@@ -50,6 +52,7 @@ def prepare_df(result: list[tuple[str, float]]) -> pd.DataFrame:
 
 
 def post_movies(df: pd.DataFrame, api_post_url: str) -> None:
+    """Post the calculated metrics to the api"""
     payload = df.to_json(orient="records")
     headers = {"content-type": "application/json"}
     r = requests.post(api_post_url, data=payload, headers=headers)
@@ -61,6 +64,8 @@ def post_movies(df: pd.DataFrame, api_post_url: str) -> None:
 def scrape_movies(
     api_key: str, api_post_url: str, max_workers: int = 4, max_page: int = 100
 ) -> str:
+    """Download movies from the themoviedb.org api in parallel, calculate
+    metrics per year and post the result to the api."""
     items = get_pages(api_key, 1, max_page, max_workers)
     df = prepare_df(items)
     post_movies(df, api_post_url)
