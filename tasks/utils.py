@@ -17,8 +17,7 @@ def get_page(api_key: str, page: int = 1) -> list[tuple[str, float]]:
 
     results = r.json()["results"]
 
-    # TODO: logger
-    print(f"Info: get_page page: {page}, count: {len(results)}")
+    logger.info(f"Info: get_page page: {page}, count: {len(results)}")
 
     return [(item["release_date"], item["vote_average"]) for item in results]
 
