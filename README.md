@@ -33,3 +33,35 @@ docker compose run --rm api bash -c 'alembic upgrade head'
 docker compose up
 ```
 
+## Development setup
+
+### Install dependencies
+
+Create a new virtual env with `python3.11`, activate it and install dependencies (only needed for IDE autocompletion and running tools like linters in development). I use [mambaforge](https://github.com/conda-forge/miniforge#mambaforge) but anything will do.
+
+```
+mamba create -n movie_review python=3.11
+mamba activate movie_review
+
+pip install -r requirements-dev.txt
+pip install -r app/requirements.txt
+pip install -r tasks/requirements.txt
+```
+
+### Run linters
+
+```
+# in the project home
+black
+flake8 --max-line-length 88
+```
+
+### Pin dependencies
+
+To create the `requirements.txt` with dependencies pinned from `requirements.in`
+
+```
+pip-compile --output-file=- > requirements.txt
+# or 
+pip-compile --output-file=- requirements-dev.in > requirements-dev.txt
+```
