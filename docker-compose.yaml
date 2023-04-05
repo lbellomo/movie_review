@@ -14,12 +14,30 @@ services:
       context: .
       dockerfile: Dockerfile.dev
     command: bash -c 'flask --app main run --debug --host 0.0.0.0'
+    ports:
+      - 5000:5000
     env_file:
       - .env
     depends_on:
       - db
     volumes:
       - ./app:/app
+
+  rabbitmq:
+    image: rabbitmq:3.11
+    restart: always
+
+  celery:
+    build:
+      context: .
+      dockerfile: Dockerfile.celery.dev
+    command: bash -c 'celery -A tasks worker -B --loglevel=INGO'
+    env_file:
+      - .env
+    depends_on:
+      - rabbitmq
+    volumes:
+      - ./tasks:/tasks
 
 volumes:
   postgres_data:
