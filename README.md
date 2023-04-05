@@ -15,10 +15,11 @@ It also uses two more images: `rabbitmq` for the celery and `postgres` for the a
 Make sure you have a modern version of docker installed.
 
 ```
-git clone 
+git clone https://github.com/lbellomo/movie_review.git
 cd movie_review
 
-# copy .env template and complete the API_KEY,
+# copy .env template and complete the themoviedb.org API_KEY
+# (you can get one at https://developers.themoviedb.org/3 ),
 # POSTGRES_PASSWORD and SQLALCHEMY_DATABASE_URI
 # You can also change the concurrency and the number of scraped pages.
 cp .env.sample .env
@@ -31,3 +32,4 @@ docker compose run --rm api bash -c 'alembic upgrade head'
 # start all containers
 docker compose up
 ```
+
