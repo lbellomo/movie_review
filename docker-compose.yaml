@@ -31,7 +31,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.celery.dev
-    command: bash -c 'celery -A tasks worker -B --loglevel=INGO'
+    command: bash -c 'celery -A tasks worker -B --loglevel=INFO --concurrency=1'
     env_file:
       - .env
     depends_on:
